@@ -1,0 +1,213 @@
+#:kivy 2.3.1
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+#: import home_screen ui.screens.home_screen
+#: import library_screen ui.screens.library_screen
+#: import playback_screen ui.screens.playback_screen
+#: import settings_screen ui.screens.settings_screen
+#: import spotify_screen ui.screens.spotify_screen
+#: import W ui.widgets
+
+## MASTER LAYOUT, HOLDS ALL SCREENS ##
+<MainLayout>:
+    size_hint: (1,1)
+    orientation: 'vertical'
+    ScreenManager:
+        id: sm
+        transition: NoTransition()
+        HomeScreen:
+            name: 'home'
+            title: 'Home'
+            HomeLayout:
+                id: hl
+                size_hint: (1,1)
+        LibraryScreen:
+            name: 'library'
+            title: 'Library'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: (1,1)
+                title: self.parent.title
+                ScreenLabel:
+                    text: self.parent.title
+                LibraryRV:
+                    id: lrv
+        PlaybackScreen:
+            name: 'playback'
+            title: 'Playback'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: (1,1)
+                title: self.parent.title
+                ScreenLabel:
+                    text: self.parent.title
+                PlaybackLayout:
+                    id: pl
+        SpotifyScreen:
+            name: 'spotify'
+            title: 'Spotify'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: (1,1)
+                title: self.parent.title
+                ScreenLabel:
+                    text: self.parent.title
+        SettingsScreen:
+            name: 'settings'
+            title: 'Settings'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: (1,1)
+                title: self.parent.title
+                ScreenLabel:
+                    text: self.parent.title
+
+## SCREEN LAYOUTS ##
+<HomeLayout>:
+    size_hint: (1,1)
+    HomeButton:
+        id: 1
+        text: 'Playback'
+        size_hint: (0.4, 0.16)
+        pos_hint: {'center_x': 0.25, 'center_y': 0.8}
+    HomeButton:
+        id: 2
+        text: 'Spotify'
+        size_hint: (0.4, 0.16)
+        pos_hint: {'center_x': 0.25, 'center_y': 0.6}
+    HomeButton:
+        id: 3
+        text: 'Library'
+        selected: True
+        size_hint: (0.4, 0.16)
+        pos_hint: {'center_x': 0.25, 'center_y': 0.4}
+    HomeButton:
+        id: 4
+        text: 'Settings'
+        size_hint: (0.4, 0.16)
+        pos_hint: {'center_x': 0.25, 'center_y': 0.2}
+
+
+<LibraryRV>:
+    viewclass: 'LibraryButton'
+    RecycleBoxLayout:
+        default_size: (None, dp(30))
+        default_size_hint: (1, None)
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+
+<PlaybackLayout>:
+    AlbumArt:
+        id: album_art
+        pos_hint: {'center_x': 0.75, 'center_y': 0.55}
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        size_hint: (0.4, 0.6)
+        pos_hint: {'center_x': 0.275, 'center_y': 0.55}
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: (1,None)
+            height: self.minimum_height
+            spacing: 15
+            SongTitle:
+                id: song_title
+            SongArtist:
+                id: song_artist
+    SongProgress:
+        id: song_progress
+        pos_hint: {'center_x': 0.5, 'center_y': 0.15}
+
+## PLAYBACK COMPONENTS ##
+<AlbumArt>:
+    source: root.source
+    size_hint: (0.45, 0.6)
+
+
+<SongTitle>:
+    font_name: 'Helvetica' 
+    font_size: '14sp'
+    bold: True
+    text_size: (self.width, None)
+    halign: 'center'
+    valign: 'center'
+    size_hint_y: None
+    height: self.texture_size[1]
+    text:'Unknown Song'
+    
+<SongArtist>:
+    font_name: 'Helvetica' 
+    font_size: '12sp'
+    bold: True
+    text_size: (self.width, None)
+    halign: 'center'
+    valign: 'center'
+    size_hint_y: None
+    height: self.texture_size[1]
+    text:'Unknown Artist'
+
+<SongProgress>:
+    min: 0
+    max: 1
+    size_hint: (0.8, 0.2)
+
+## LIBRARY COMPONENTS ##
+<ScreenLabel>:
+    font_name: 'Helvetica' 
+    font_size: '14sp'
+    bold: True
+    text_size: self.size
+    halign: 'left'
+    valign: 'center'
+    padding: [15, 0] 
+    text:' Loading...'
+    size_hint_x: 1
+    size_hint_y: 0.1
+    canvas.before:
+        Color:
+            rgba: (0.31, 0.08, 0.78, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<LibraryButton>:
+    selected: False
+    font_name: 'Helvetica' 
+    font_size: '14sp'
+    bold: True
+    text_size: self.size
+    halign: 'left'
+    valign: 'center'
+    padding: [15, 0] 
+    background_normal: ''
+    background_color: (0, 0, 0, 0) 
+    canvas.before:
+        Color:
+            rgba: (0.31, 0.08, 0.78, 1) if self.selected else (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    on_release: root.on_release()
+
+
+## HOME COMPONENTS ##
+<HomeButton>:
+    selected: False
+    font_name: 'Helvetica' 
+    font_size: '18sp'
+    bold: True
+    text_size: self.size
+    halign: 'left'
+    valign: 'center'
+    padding: [20, 10] 
+    background_normal: ''
+    background_color: (0, 0, 0, 0) 
+    canvas.before:
+        Color:
+            rgba: (0.31, 0.08, 0.78, 1) if self.selected else (0, 0, 0, 0)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [20]
+    on_release: root.on_release()
