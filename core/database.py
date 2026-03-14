@@ -142,8 +142,11 @@ class Database:
         """
 
         # Insert logic for each table one by one, inserting needed values to db
-        for cdir, sdir, files in Path.walk(self.LIBRARY):
+        for cdir_str, sdir, files in Path.walk(self.LIBRARY):
             # For each media file, grab metadata and insert into database
+            # Using os.walk to work on pi, but edit to make my path.Walk logic to work
+            cdir = Path(cdir_str) 
+            rdir = cdir.relative_to(self.ROOT)
             for f in files:
                 if f.lower().endswith((".flac", ".mp3")):  # Tuple (a, b)
                     rdir = cdir.relative_to(self.ROOT)
